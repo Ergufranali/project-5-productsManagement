@@ -18,9 +18,13 @@
 //     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$/.test(email);
 // }
 
-// module.exports = {isName, isPhone, isPincode, isPassword, isEmail};
+// function isStreet(street){
+//     return /^[A-Za-z0-9][\w\.,-:\/]{0,}$/.test(street);
+// }
 
-const mongoose = require("mongoose");
+// module.exports = {isName, isPhone, isPincode, isPassword, isEmail, isStreet};
+
+// const mongoose = require("mongoose");
 
 //validations---------------------->>>
 

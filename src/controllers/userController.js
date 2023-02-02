@@ -1,46 +1,52 @@
 // const userModel = require('../models/userModel');
-// const {isName, isPhone, isPincode, isPassword, isEmail} = require('../validator/validator');
+// const {isName, isPhone, isPincode, isPassword, isEmail, isStreet} = require('../validator/validator');
 
 // exports.createUser = async function(req, res){
 //     try {
-//         // const data = req.body;
-//         // const profileImage = req.files[0];
-//         // const fields = ["fname", "lname", "email", "phone", "password", "address"];
-//         // fields.forEach(x=>{
-//         //     if(!data[`${fields[i]}`])
-//         //         return res.status(400).send({status: false, message: `${fields[i]} is required.`});
-//         // });
-//         // if(!profileImage) return res.status(400).send({status: false, message: `profileImage is required.`});
+//         const data = req.body;
+//         const profileImage = req.files[0];
+//         const fields = ["fname", "lname", "email", "phone", "password", "address"];
+//         fields.forEach(x=>{
+//             if(!data[`${fields[i]}`])
+//                 return res.status(400).send({status: false, message: `${fields[i]} is required.`});
+//         });
+//         if(!profileImage) return res.status(400).send({status: false, message: `profileImage is required.`});
 
-//         // if(!isName(data.fname)) return res.status(400).send({status: false, message: `Invalid fname.`});
-//         // if(!isName(data.lname)) return res.status(400).send({status: false, message: `Invalid lname.`});
-//         // if(!isEmail(data.email)) return res.status(400).send({status: false, message: `Invalid email.`});
-//         // if(!isPhone(data.phone)) return res.status(400).send({status: false, message: `Invalid phone.`});
-//         // if(!isPassword(data.password)) return res.status(400).send({status: false, message: `Invalid password.`});
+//         if(!isName(data.fname)) return res.status(400).send({status: false, message: `Invalid fname.`});
+//         if(!isName(data.lname)) return res.status(400).send({status: false, message: `Invalid lname.`});
+//         if(!isEmail(data.email)) return res.status(400).send({status: false, message: `Invalid email.`});
+//         if(!isPhone(data.phone)) return res.status(400).send({status: false, message: `Invalid phone.`});
+//         if(!isPassword(data.password)) return res.status(400).send({status: false, message: `Invalid password.`});
 
-//         // if(!data.address.shipping) return res.status(400).send({status: false, message: `shipping address is required.`});
-//         // if(!data.address.billing) return res.status(400).send({status: false, message: `billing address is required.`});
+//         if(!data.address.shipping) return res.status(400).send({status: false, message: `shipping address is required.`});
+//         if(!data.address.billing) return res.status(400).send({status: false, message: `billing address is required.`});
 
-//         // if(!data.address.shipping.street) return res.status(400).send({status: false, message: `shipping street is required.`});
-//         // if(!data.address.billing.street) return res.status(400).send({status: false, message: `billing street is required.`});
+//         if(!data.address.shipping.street) return res.status(400).send({status: false, message: `shipping street is required.`});
+//         if(!data.address.billing.street) return res.status(400).send({status: false, message: `billing street is required.`});
         
-//         // if(!data.address.shipping.city) return res.status(400).send({status: false, message: `shipping city is required.`});
-//         // if(!data.address.billing.city) return res.status(400).send({status: false, message: `billing city is required.`});
+//         if(!data.address.shipping.city) return res.status(400).send({status: false, message: `shipping city is required.`});
+//         if(!data.address.billing.city) return res.status(400).send({status: false, message: `billing city is required.`});
 
-//         // if(!data.address.shipping.pincode) return res.status(400).send({status: false, message: `shipping pincode is required.`});
-//         // if(!data.address.billing.pincode) return res.status(400).send({status: false, message: `billing pincode is required.`});
+//         if(!data.address.shipping.pincode) return res.status(400).send({status: false, message: `shipping pincode is required.`});
+//         if(!data.address.billing.pincode) return res.status(400).send({status: false, message: `billing pincode is required.`});
 
-//         // if(!isPincode(data.address.shipping.pincode)) return res.status(400).send({status: false, message: `Invalid shipping pincode is required.`});
-//         // if(!isPincode(data.address.billing.pincode)) return res.status(400).send({status: false, message: `Invalid billing pincode is required.`});
+//         if(!isPincode(data.address.shipping.pincode)) return res.status(400).send({status: false, message: `Invalid shipping pincode.`});
+//         if(!isPincode(data.address.billing.pincode)) return res.status(400).send({status: false, message: `Invalid billing pincode.`});
 
-//         // const user = await userModel.findOne({$or: [{email: data.email}, { phone: data.phone}]});
-//         // if(user){
-//         //     if(user.email==data.emil) return res.status(400).send({status: false,  message: "email already registered."});
-//         //     return res.status(400).send({status: false,  message: "phone already registered."});
-//         // }
+//         if(!isName(data.address.shipping.city)) return res.status(400).send({status: false, message: `Invalid shipping city.`});
+//         if(!isName(data.address.billing.city)) return res.status(400).send({status: false, message: `Invalid billing city.`});
 
-//         // const newUser = await userModel.create(data);
-//         // res.status(201).send({status: true, message: "Your profile created successfully.", data: newUser});
+//         if(!isStreet(data.address.shipping.street)) return res.status(400).send({status: false, message: `Invalid shipping street.`});
+//         if(!isStreet(data.address.billing.street)) return res.status(400).send({status: false, message: `Invalid billing street.`});
+
+//         const user = await userModel.findOne({$or: [{email: data.email}, { phone: data.phone}]});
+//         if(user){
+//             if(user.email==data.emil) return res.status(400).send({status: false,  message: "email already registered."});
+//             return res.status(400).send({status: false,  message: "phone already registered."});
+//         }
+
+//         const newUser = await userModel.create(data);
+//         res.status(201).send({status: true, message: "Your profile created successfully.", data: newUser});
 //     } catch (error) {
 //         res.status(500).send({status: false, message: error.message});
 //     }
@@ -159,9 +165,9 @@ exports.createUser = async function (req, res) {
     if(files.length===0){
       return res.status(400).send({ status : false, message : "Profile Image is mandatory"})
     }
-    if(files.fieldname=='profileImage'){
-      return res.status(400).send({ status : false, message : "file name should be profile image"})
-    }
+    // if(files.fieldname=='profileImage'){
+    //   return res.status(400).send({ status : false, message : "file name should be profile image"})
+    // }
 
     // console.log(files)
     let profileImgUrl = await uploadFile(files[0])
@@ -198,7 +204,7 @@ exports.userLogin = async function(req,res){
             {
                 id: user._id,
                 iat: Math.floor(Date.now()/1000),
-                exp: Math.floor(Date.now()/1000)+60*60*24
+                exp: Math.floor(Date.now()/1000)+60*1
             },
             "secret-key"
         )
