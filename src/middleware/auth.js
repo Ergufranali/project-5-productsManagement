@@ -1,35 +1,41 @@
 const jwt = require('jsonwebtoken');
-const userModel = require('../models/userModel');
-const { isValidObjectId} = require('../validator/validator');
+const userModel = require('../models/userModel')
+const mongoose = require ("mongoose")
+const {isValidObjectId} = mongoose
 
 //<--------------------------------------------AUTHENTICATION---------------------------------------->//
 
 exports.authentication = async function(req,res, next){
     try {
-        const token = req.headers.authorization;
-        if(!token) return res.status(400).send({status: false, message: "Please provide token."});
-        const x = token.split(" ");
-        const y = x[1];
-        console.log(x,y);
-        if(!y) return res.status(400).send({status: false, message: "Invalid token."});
-        const tokenValidity = jwt.decode(y, "secrete-key");
-        // const tokenTime = (tokenValidity.exp)*1000;
-        // const createdTime = Date.now();
-        if(createdTime>tokenTime) return res.status(400).send({status: false, message: "Token expired, login again."});
-        jwt.verify(y, "secret-key", (err, decoded)=>{
-            if(err) return res.status(401).send({status: false, message: "Invalid token."});
-            req.decoded = decoded;
-            res.send("login");
-            // next();
-        });
+       let token = req.headers["authorization"]
+       if(!token) return res.status(400).send({status:false, message:"token must be present , choose bearer token"})
+       token = token.split(' ')[1]
+    //    if(!token) return res.status(400).send({status:false, message:"Token must be present"})
+       
+       jwt.verify(token, 'secret-key', function(err,decode){
+        if(err){
+            return res.status(401).send({status:false, message:err.message})
+        }else{
+
+            req.dedodedToken = decode;
+            next()
+        }
+       })
+       
     } catch (error) {
         res.status(500).send({status: false, message: error.message});
     }
 }
 
+
+
 exports.authorisation = async function(req,res,next){
     try {
         const decoded = req.decoded;
+        const userId = req.params.userId;
+        if(!isValidObjectId(userId)) return res.status(400).send({status: false, message: "Invalid userId."});
+        if(userId!=decoded.id) return res.status(403).send({status: false, message: "You are not authorised."});
+        next();
     } catch (error) {
         res.status(500).send({status: false, message: error.message});
     }

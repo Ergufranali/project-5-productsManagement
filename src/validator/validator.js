@@ -10,9 +10,9 @@
 //     return /^[0-9]{6}$/.test(pincode);
 // }
 
-// function isPassword(password){
-//     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(password);
-// }
+function isValidPassword(password){
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(password);
+}
 
 // function isEmail(email){
 //     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$/.test(email);
@@ -34,6 +34,11 @@ const isEmpty = function (value) {
   if (typeof value === "string" && value.trim().length === 0) return false;
   return true;
 };
+
+//isValidNumber
+const isvalidNumber = function (value) {
+  return /^(?:0|[1-9]\d*)(?:\.(?!.*000)\d+)?$/.test(value);
+}
 
 // Vlidation for objectId
 const isValidObjectId = (objectId) => {
@@ -70,10 +75,10 @@ const isValidInputBody = function (object) {
   return Object.keys(object).length > 0;
 };
 
-// const isValidImage = function (profileImage) {
-//   let imageRegex = /^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$/;
-//   return imageRegex.test(profileImage);
-// };
+const isValidImage = function (value) {
+  const r = /\.(gif|jpe?g|tiff?|png|webp|temp)$/
+  return r.test(value)
+}
 
 const isValidStreet = function (street) {
   let streets = /^[#.0-9a-zA-Z\s,-]+$/;
@@ -108,9 +113,11 @@ module.exports = {
   isValidInputBody,
   isValidpincode,
   isValidObjectId,
-  //isValidImage,
+  isValidImage,
   isValidStreet,
   isValidPrice,
   isValidStyle,
   validPrice,
+  isValidPassword,
+  isvalidNumber
 };
