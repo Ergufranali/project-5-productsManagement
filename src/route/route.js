@@ -1,19 +1,21 @@
-const express = require('express');
-const { createProduct } = require('../controllers/productController');
-const router = express.Router();
-const userController = require('../controllers/userController')
-const productController = require('../controllers/productController')
-const middleware = require('../middleware/auth')
-// ==============================================USER_API========================================================
+const router = require('express').Router();
+const userController = require('../controllers/userController');
+const productController = require('../controllers/productController');
+const cartController = require('../controllers/cartController');
+const auth = require('../middleware/auth');
+
 router.post('/register', userController.createUser);
-router.post('/login', userController.userLogin);
-router.get('/user/:userId/profile',middleware.authentication,userController.user);
-router.put('/user/:userId/profile',userController.updateUser)
+router.post('/login', userController.loginUser);
+router.get('/user/:userId/profile', auth.authentication, auth.authorisation, userController.user);
+router.put('/user/:userId/profile', auth.authentication, auth.authorisation, userController.updateUser);
 
+router.post('/products', productController.createProduct);
+router.get('/products', productController.getProducts);
+router.get('/products/:productId', productController.getProduct);
+router.put('/products/:productId', productController.updateProduct);
+router.delete('/products/:productId', productController.deleteProduct);
 
-//=============================================PRODUCT-API=======================================================
-
-router.post('/products', productController.createProduct)
+router.post('/users/:userId/cart', cartController.createCart);
 
 router.all('/*', (req,res)=>res.status(404).send({status: false, message: "Page not found."}));
 

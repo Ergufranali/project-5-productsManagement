@@ -104,6 +104,50 @@ const validPrice = function (price) {
   return /^\d{0,8}(\.\d{1,4})?$/.test(price);
 };
 
+exports.isValidProduct = {
+  title: function (title) {
+      return /^[A-Za-z][A-Za-z' ]{2,30}$/.test(title);
+  },
+
+  description: function (description) {
+      return /^[A-Za-z][A-Za-z',-: ]{2,50}$/.test(description);
+  },
+
+  price: function (price) {
+      return price != NaN;
+  },
+
+  currencyId: function (currencyId) {
+      return currencyId == "INR";
+  },
+
+  currencyFormat: function (currencyFormat) {
+      return currencyFormat == "₹";
+  },
+
+  isFreeShipping: function (isFreeShipping) {
+      if(!isFreeShipping) return true;
+      return typeof isFreeShipping == "boolean";
+  },
+
+  productImage: function(image){
+      return /.*\w.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/.test(image.originalname);
+  },
+
+  availableSizes: function (size) {
+      const sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"];
+      for (let i = 0; i < size.length; i++) {
+          if (!sizes.includes(size[i])) return false;
+      }
+      return true;
+  },
+
+  installments: function (installments) {
+      if(!installments) return true;
+      return installments != NaN;
+  }
+}
+
 module.exports = {
   isEmpty,
   validSize,

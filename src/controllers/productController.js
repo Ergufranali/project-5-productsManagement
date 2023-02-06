@@ -1,5 +1,7 @@
 const productModel = require ("../models/productModel");
 const {uploadFile} = require("../aws/awsUpload");
+const { isValidProduct } = require('../validator/validator');
+const { isValidObjectId} = require('mongoose');
 const check = require("../validator/validator");
 
 
@@ -92,7 +94,7 @@ exports.createProduct = async function (req,res){
 
 // =======================================GET-PRODUCT=========================================================================
 
-const getProduct = async function (req,res){
+exports.getProducts = async function (req,res){
     try{
 
         let queries = req.query
@@ -138,8 +140,68 @@ const getProduct = async function (req,res){
             return pricesort.length == 0? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:pricesort})
         }
 
-        return res.status(200).send({status:true, messgae:"success", data:getProduct})
+        return res.status(200).send({status:true, messgae:"success", data:getProducts})
     }catch(error){
         return res.status(500).send({ status: "false", msg: error.message });
       }
+}
+
+exports.getProduct = async function (req, res) {
+    try {
+        const productId = req.params.productId;
+        if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Invalid productId" });
+        const product = await productModel.findOne({ _id: productId, isDeleted: false });
+        if (!product) return res.status(404).send({ status: false, message: "No item found." });
+        res.status(200).send({ status: true, message: "Product details", data: product });
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}
+
+exports.updateProduct = async function(req,res){
+    try {
+        const productId = req.params.productId;
+        if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Invalid productId" });
+
+        const data = req.body;
+        const fields = ["title", "description", "price", "currencyId", "currencyFormat", "availableSizes", "isFreeShipping", "installments"];
+        for(let i=0;i<fields.length;i++){
+            if(data[`${fields[i]}`] && !isValidProduct[`${fields[i]}`](data[`${fields[i]}`]))
+                return res.status(400).send({status: false, message: `Please provide valid ${fields[i]}.`});
+        }
+        if(req.files && req.files[0]){
+            if(req.files[0] && !isValidProduct(req.files[0]))
+                return res.status(400).send({status: false, message: "Please provide valid profileImage."});
+            data.profileImage = await uploadFile(req.files[0]);
+        }
+
+        if(!Object.keys(data).length && !(req.files && req.files[0]))
+            return res.status(400).send({status: false, message: "Please provide any field that you want to update."});
+        
+        const updatedProduct = await productModel.findOneAndUpdate(
+            {_id: productId, isDeleted: false},
+            data,
+            {new: true}
+        );
+        if(!updatedProduct) return res.status(404).send({status: false, message: "Product not found."});
+        res.status(200).send({status: true, message: "Product detail updated successfully", data: updatedProduct});
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
+}
+
+exports.deleteProduct = async function(req,res){
+    try {
+        const productId = req.params.productId;
+        if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Invalid productId" });
+        const deletedProduct = await productModel.findOneAndUpdate(
+            {_id: productId, isDeleted: false},
+            { isDeleted: true, deletedAt : Date.now()},
+            {new: true}
+        );
+        if(!deletedProduct) return res.status(404).send({status: false, message: "Product not found."});
+        res.status(200).send({status: true, message: "Product deleted successfully", data: deletedProduct});
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
 }

@@ -131,7 +131,7 @@ exports.createUser = async function (req, res) {
 
 // ==========================================> USER LOGIN <=================================//
 
-exports.userLogin = async function(req,res){
+exports.loginUser = async function(req,res){
     try {
         let data = req.body;
         let {email, password} = data;
