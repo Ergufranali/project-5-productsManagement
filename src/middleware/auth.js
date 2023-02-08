@@ -17,7 +17,7 @@ exports.authentication = async function(req,res, next){
             return res.status(401).send({status:false, message:err.message})
         }else{
 
-            req.dedodedToken = decode;
+            req.decodedToken = decode;
             next()
         }
        })
@@ -31,7 +31,7 @@ exports.authentication = async function(req,res, next){
 
 exports.authorisation = async function(req,res,next){
     try {
-        const decoded = req.decoded;
+        const decoded = req.decodedToken;
         const userId = req.params.userId;
         if(!isValidObjectId(userId)) return res.status(400).send({status: false, message: "Invalid userId."});
         if(userId!=decoded.id) return res.status(403).send({status: false, message: "You are not authorised."});

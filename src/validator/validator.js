@@ -104,7 +104,7 @@ const validPrice = function (price) {
   return /^\d{0,8}(\.\d{1,4})?$/.test(price);
 };
 
-exports.isValidProduct = {
+const isValidProduct = {
   title: function (title) {
       return /^[A-Za-z][A-Za-z' ]{2,30}$/.test(title);
   },
@@ -136,6 +136,7 @@ exports.isValidProduct = {
 
   availableSizes: function (size) {
       const sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"];
+      if(!size.length) return false;
       for (let i = 0; i < size.length; i++) {
           if (!sizes.includes(size[i])) return false;
       }
@@ -163,5 +164,6 @@ module.exports = {
   isValidStyle,
   validPrice,
   isValidPassword,
-  isvalidNumber
+  isvalidNumber,
+  isValidProduct
 };

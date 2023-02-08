@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, unique: true, trim: true },
+    title: { type: String, required: true, unique: true },
     description: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
     currencyId: {
@@ -33,7 +33,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
     installments: { type: Number },
-    deletedAt: { type: Date, default: null },
+    deletedAt: { type: Date },
     isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
