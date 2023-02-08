@@ -95,65 +95,24 @@ exports.createProduct = async function (req,res){
 
 // =======================================GET-PRODUCT=========================================================================
 
-exports.getProducts = async function (req,res){
-    try{
-
-        let queries = req.query
-
-        let getProducts = await productModel.find({isDeleted: false})
-
-        if(getProducts.length == 0){
-            return res.status(404).send({status:false, message:"No product found"})
+exports.getProducts = async function (req, res) {
+    try {
+        let query = req.query;
+        let data = {};
+        if (query) {
+            if(query.name) data.title = {$regex: query.name.toLowerCase().trim()};
+            if(query.size) data.availableSizes = query.size.toUpperCase();
+            if(query.priceGreaterThan && query.priceLessThan) data.price = {$gt: query.priceGreaterThan, $lt: query.priceLessThan};
+            else if(query.priceGreaterThan) data.price = {$gt: query.priceGreaterThan};
+            else if(query.priceLessThan) data.price = { $lt: query.priceLessThan};
         }
-
-        if(queries){
-            if(queries.size && queries.name && queries.priceGreaterthan){
-                let combination = await productModel.find({availableSizes:queries.size, title:{ $regex: queries.name}, price:{$gt: queries.priceGreaterthan}})
-                return combination.length == 0 ? res.status(404).send({status:false, message:"No product found"}) : res.status(200).send({status:false, message:"Success", data: combination})
-            }
-        }
-
-        if(queries.size && queries.name){
-            let combination = await productModel.find({availableSizes: queries.size, title: { $regex: queries.name}});
-            return combination.length == 0 ? res.status(404).send({status: false, message: "No product found."}) : res.status(200).send({status: true, message: "Success", data: combination})
-        }
-
-        if(queries.size && queries.name && queries.priceLessThan){
-            let combination = await productModel.find({availableSizes: queries.size,title:{ $regex: queries.name},price: { $lt: queries.priceLessThan}})
-            return combination.length == 0 ? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:combination})
-        }
-
-        if(queries.size){
-            let sizes = queries.size.split(',')
-            let getbySize = await productModel.find({isDeleted:false,availableSizes:{$in: sizes}})
-            return getbySize.length == 0 ? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:getbySize})
-        }
-
-        if(queries.name){
-            let getbyName = await productModel.find({isDeleted:false,title: { $regex: queries.name},})
-            return getbyName.length == 0 ? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:getbyName})
-        }
-
-        if(queries.priceGreaterThan){
-            let getByPriceGT = await productModel.find({price: { $gt: queries.priceGreaterThan}})
-            return getByPriceGT.length == 0 ? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:getByPriceGT})
-        }
-
-        if(queries.priceLessThan){
-            let getByPriceLT = await productModel.find({price: { $lt: queries.priceLessThan}})
-            return getByPriceLT.length == 0 ? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:getByPriceLT})
-        }
-
-        let priceSort = queries.priceSort
-        if (priceSort) {
-            let pricesort = await productModel.find({isDeleted:false,}).sort({price: priceSort})
-            return pricesort.length == 0? res.status(404).send({status:false, message:"no product found"}): res.status(200).send({status:true, message:"success", data:pricesort})
-        }
-
-        return res.status(200).send({status:true, messgae:"success", data:getProducts})
-    }catch(error){
-        return res.status(500).send({ status: "false", msg: error.message });
-      }
+        
+        const products = await productModel.find(data).sort({price: (query.priceSort<0?-1:1)});
+        if(!products.length) return res.status(404).send({status: false, message: "No any product found."});
+        res.status(200).send({status: true, message: "Products", data: products});
+    } catch (error) {
+        res.status(500).send({ status: false, message: error.message });
+    }
 }
 
 exports.getProduct = async function (req, res) {
