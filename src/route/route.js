@@ -2,6 +2,7 @@ const router = require('express').Router();
 const userController = require('../controllers/userController');
 const productController = require('../controllers/productController');
 const cartController = require('../controllers/cartController');
+const orderController = require('../controllers/orderController');
 const auth = require('../middleware/auth');
 
 router.post('/register', userController.createUser);
@@ -16,6 +17,8 @@ router.put('/products/:productId', productController.updateProduct);
 router.delete('/products/:productId', productController.deleteProduct);
 
 router.post('/users/:userId/cart', cartController.createCart);
+
+router.post('/users/:userId/orders', orderController.createOrder);
 
 router.all('/*', (req,res)=>res.status(404).send({status: false, message: "Page not found."}));
 
