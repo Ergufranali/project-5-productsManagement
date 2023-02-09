@@ -93,10 +93,10 @@ exports.createProduct = async function (req, res) {
 exports.getProducts = async function (req, res) {
     try {
         let query = req.query;
-        if(query.priceGreaterThan && query.priceGreaterThan != NaN) return res.status(400).send({status: false, message: "priceGreaterThan should be neumaric."})
-        if(query.priceLessThan && query.priceLessThan != NaN) return res.status(400).send({status: false, message: "priceLessThan should be neumaric."})
+        if(query.priceGreaterThan && isNaN(query.priceGreaterThan)) return res.status(400).send({status: false, message: "priceGreaterThan should be numeric."})
+        if(query.priceLessThan && isNaN(query.priceLessThan) ) return res.status(400).send({status: false, message: "priceLessThan should be neumaric."})
 
-        if(query.priceSort && (query.priceSort != 1 || query.priceSort != -1)) return res.status(400).send({status:false, message: "PriceSort must be number 1 or -1"})
+        if(query.priceSort && (query.priceSort != 1 && query.priceSort != -1)) return res.status(400).send({status:false, message: "PriceSort must be number 1 or -1"})
 
         let data = {};
         if (query) {
