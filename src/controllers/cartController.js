@@ -23,7 +23,6 @@ exports.createCart = async function(req,res){
                 if(cart.items[i].productId == productId){
                     cart.items[i].quantity+=1;
                     cart.totalPrice += product.price;
-                    cart.totalItems += 1;
                     productExist = true;
                     break;
                 }
@@ -76,7 +75,7 @@ exports.updateCart = async function (req, res) {
         if (!isValidObjectId(productId)) return res.status(400).send({ status: false, message: "Please provide valid productId." });
         if (!cartId) return res.status(400).send({ status: false, message: "Please provide cartId." });
         if (!isValidObjectId(cartId)) return res.status(400).send({ status: false, message: "Please provide valid cartId." });
-        if (!removeProduct) return res.status(400).send({ status: false, message: "Please provide removeProduct." });
+        if (!removeProduct && removeProduct!==0) return res.status(400).send({ status: false, message: "Please provide removeProduct." });
         if (removeProduct != 0 && removeProduct != 1) return res.status(400).send({ status: false, message: "Remove product can be 0 or 1." });
 
         const product = await productModel.findOne({ _id: productId, isDeleted: false });

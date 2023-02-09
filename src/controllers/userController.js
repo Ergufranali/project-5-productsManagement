@@ -20,7 +20,10 @@ exports.createUser = async function (req, res) {
       return res.status(400).send({ status: "false", message: "All fields are mandatory" });
     }
 
-    let { fname, lname, email, phone, password, address, profileImage } = data;
+    let { fname, lname, email, phone, password, address } = data;
+    let { shipping, billing} = address;
+    
+    if(!billing) return res.status(400).send({status: "false", message: "billing address must be present"});
     if (!isEmpty(fname)) {
       return res.status(400).send({status: "false", message: "fname must be present"});
     }
