@@ -41,7 +41,7 @@ exports.createCart = async function(req,res){
             let oldCart  = await cartModel.findOne({userId});
             if(oldCart) return res.status(400).send({status: false, message: "Please provide cartId."});
 
-            var newCart = await cartModel.create({
+            let newCart = await cartModel.create({
                 userId,
                 items: [
                     {productId, quantity: 1}
