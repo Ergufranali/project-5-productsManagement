@@ -11,15 +11,16 @@ const { isValidObjectId } = require('mongoose')
 
 exports.createUser = async function (req, res) {
   try {
-    let data = req.body;
-    let files = req.files;
+    let data = req.body // data will come in req body
+    let files = req.files; // for AWS
 
     if (Object.keys(data).length == 0) {
       return res.status(400).send({ status: "false", message: "All fields are mandatory" });
     }
 
-    let { fname, lname, email, phone, password, address } = data;
+    let { fname, lname, email, phone, password, address } = data;  // destructuring
 
+    // validation for keys
     if (!isEmpty(fname)) {
       return res.status(400).send({ status: "false", message: "fname must be present" });
     }
@@ -99,8 +100,9 @@ exports.createUser = async function (req, res) {
         }
       }
     }
-    let saltRounds = await bcrypt.genSalt(10);
-    let hash = await bcrypt.hash(password, saltRounds);
+
+    // for encrypted password
+    let hash = await bcrypt.hash(password, 10);
     data.password = hash;
 
     let checkEmail = await userModel.findOne({ email });

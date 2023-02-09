@@ -2,6 +2,8 @@ const { isValidObjectId } = require('mongoose');
 const cartModel = require('../models/cartModel');
 const productModel = require('../models/productModel');
 
+
+// ===============================Create CArt ===================================================
 exports.createCart = async function(req,res){
     try {
         const userId = req.params.userId;
@@ -55,7 +57,8 @@ exports.createCart = async function(req,res){
         res.status(500).send({status: false, message: error.message});
     }
 }
-
+ 
+// ============================================Get-cart =======================================================
 exports.getCart = async function(req,res){
     try {
         const userId = req.params.userId;
@@ -68,6 +71,8 @@ exports.getCart = async function(req,res){
     }
 }
 
+
+// =======================================Update cart ======================================================
 exports.updateCart = async function (req, res) {
     try {
         const { productId, cartId, removeProduct } = req.body;
@@ -103,6 +108,8 @@ exports.updateCart = async function (req, res) {
     }
 }
 
+
+// ===========================================Delete Cart ======================================================
 exports.deleteCart = async function (req, res) {
     try {
         const userId = req.params.userId;

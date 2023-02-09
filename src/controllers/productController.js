@@ -4,9 +4,7 @@ const { isValidProduct } = require('../validator/validator');
 const { isValidObjectId } = require('mongoose');
 const check = require("../validator/validator");
 
-
-
-//============================Create-Product=============
+//============================Create-Product================================================
 
 exports.createProduct = async function (req, res) {
     try {
@@ -15,9 +13,9 @@ exports.createProduct = async function (req, res) {
 
         let { title, description, price, currencyId, currencyFormat, isFreeShipping, style, availableSizes, installments } = data
 
-
         const image = req.files
-        // title -------------
+
+        // title ==============================================================================
         if (!title) return res.status(400).send({ status: false, message: "title is mandotary" })
         if (!check.isEmpty(title)) return res.status(400).send({ status: false, message: "title is not valid" })
         title = title.toLowerCase();
@@ -51,9 +49,7 @@ exports.createProduct = async function (req, res) {
         if (isFreeShipping) {
             if (!["true", "false"].includes(isFreeShipping)) return res.status(400).send({ status: false, message: "isFreeShipping only in booleans" });
         }
-
-        image//
-
+        // validation for IMG /AWS
         if (image && image.length == 0)
             return res.status(400).send({ status: false, message: "profile image should be required" })
         else if (!check.isValidImage(image[0].originalname))
@@ -81,8 +77,7 @@ exports.createProduct = async function (req, res) {
         }
 
         let product = {
-            title, description, price, currencyId, currencyFormat, isFreeShipping, productImage: productImage, style,
-            availableSizes, installments
+            title, description, price, currencyId, currencyFormat, isFreeShipping, productImage: productImage, style, availableSizes, installments
         }
 
         const productData = await productModel.create(product);
@@ -93,28 +88,35 @@ exports.createProduct = async function (req, res) {
     }
 }
 
-// =======================================GET-PRODUCT=========================================================================
+// =======================================GET-PRODUCT==================================================
 
 exports.getProducts = async function (req, res) {
     try {
         let query = req.query;
+        if(query.priceGreaterThan && query.priceGreaterThan != NaN) return res.status(400).send({status: false, message: "priceGreaterThan should be neumaric."})
+        if(query.priceLessThan && query.priceLessThan != NaN) return res.status(400).send({status: false, message: "priceLessThan should be neumaric."})
+
+        if(query.priceSort && (query.priceSort != 1 || query.priceSort != -1)) return res.status(400).send({status:false, message: "PriceSort must be number 1 or -1"})
+
         let data = {};
         if (query) {
             if (query.name) data.title = { $regex: query.name.toLowerCase().trim() };
             if (query.size) data.availableSizes = query.size.toUpperCase();
+            
             if (query.priceGreaterThan && query.priceLessThan) data.price = { $gt: query.priceGreaterThan, $lt: query.priceLessThan };
             else if (query.priceGreaterThan) data.price = { $gt: query.priceGreaterThan };
             else if (query.priceLessThan) data.price = { $lt: query.priceLessThan };
         }
 
         const products = await productModel.find(data).sort({ price: (query.priceSort < 0 ? -1 : 1) });
+
         if (!products.length) return res.status(404).send({ status: false, message: "No any product found." });
         res.status(200).send({ status: true, message: "Products", data: products });
     } catch (error) {
         res.status(500).send({ status: false, message: error.message });
     }
 }
-
+// ==================GET products By ID===================================================
 exports.getProduct = async function (req, res) {
     try {
         const productId = req.params.productId;
@@ -127,6 +129,8 @@ exports.getProduct = async function (req, res) {
     }
 }
 
+
+// Update products ================================================================================
 exports.updateProduct = async function (req, res) {
     try {
         const productId = req.params.productId;
@@ -152,10 +156,7 @@ exports.updateProduct = async function (req, res) {
             return res.status(400).send({ status: false, message: "Please provide any field that you want to update." });
 
         const updatedProduct = await productModel.findOneAndUpdate(
-            { _id: productId, isDeleted: false },
-            obj,
-            { new: true }
-        );
+            { _id: productId, isDeleted: false }, obj,{ new: true });
         if (!updatedProduct) return res.status(404).send({ status: false, message: "Product not found." });
         res.status(200).send({ status: true, message: "Product detail updated successfully", data: updatedProduct });
     } catch (error) {
@@ -163,6 +164,7 @@ exports.updateProduct = async function (req, res) {
     }
 }
 
+// ===================================Delete Product ======================================================
 exports.deleteProduct = async function (req, res) {
     try {
         const productId = req.params.productId;

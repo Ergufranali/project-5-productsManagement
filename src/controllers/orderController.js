@@ -3,7 +3,7 @@ const cartModel = require("../models/cartModel")
 const { isValidObjectId } = require('mongoose');
 const check = require('../validator/validator');
 
-// ============================================================Create Order =================================================================
+// =========================================================CreateOrder=============================================
 
 exports.createOrder = async function (req, res) {
     try {
@@ -32,14 +32,7 @@ exports.createOrder = async function (req, res) {
         let totalQuantity = 0;
         items.forEach(x => totalQuantity += x.quantity);
 
-        let obj = {
-            userId,
-            items,
-            totalPrice,
-            totalItems,
-            totalQuantity,
-            cancellable
-        }
+        let obj = {userId,items,totalPrice,totalItems,totalQuantity,cancellable}
 
         if (cart.items.length == 0) return res.status(400).send({ status: true, message: "Cart is empty." });
 
@@ -53,6 +46,7 @@ exports.createOrder = async function (req, res) {
     }
 }
 
+// =======================================Update_order=======================================================
 exports.updateOrder = async function (req, res) {
     try {
         userId = req.params.userId;
@@ -61,8 +55,8 @@ exports.updateOrder = async function (req, res) {
 
         let { orderId, status } = req.body;
 
-        if (!check.isEmpty(orderId)) return res.status(400).send({ status: false, message: "please enter orderId" });
-        if (!isValidObjectId(orderId)) return res.status(400).send({ status: false, message: "Please enter valid OrderId" });
+        if (!check.isEmpty(orderId)) return res.status(400).send({ status: false, message: "please orderId" });
+        if (!isValidObjectId(orderId)) return res.status(400).send({ status: false, message: "Please OrderId" });
 
         if (!check.isEmpty(status)) return res.status(400).send({ status: false, message: "status is required." });
 
