@@ -1,32 +1,9 @@
-// function isName(name){
-//     return /^[A-Za-z ]{3,30}$/.test(name);
-// }
+//validations---------------------->>>
 
-// function isPhone(phone){
-//     return /^(0|91)?[6-9][0-9]{9}}$/.test(phone);
-// }
-
-// function isPincode(pincode){
-//     return /^[0-9]{6}$/.test(pincode);
-// }
-
+// Password Validation
 function isValidPassword(password){
     return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,15}$/.test(password);
 }
-
-// function isEmail(email){
-//     return /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,6})+$/.test(email);
-// }
-
-// function isStreet(street){
-//     return /^[A-Za-z0-9][\w\.,-:\/]{0,}$/.test(street);
-// }
-
-// module.exports = {isName, isPhone, isPincode, isPassword, isEmail, isStreet};
-
-// const mongoose = require("mongoose");
-
-//validations---------------------->>>
 
 //Value Validation
 const isEmpty = function (value) {
